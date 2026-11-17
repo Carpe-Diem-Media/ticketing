@@ -3,11 +3,19 @@ defmodule Ticketing.Outbox.EventDescriptor do
   Validates an internal event descriptor against an EVT-1 registry entry and
   derives the canonical dedupe and ordering identities.
 
-  This module defines no production descriptors or delivery handlers. Callers
-  supply the installed EVT-1 registry when registering a descriptor.
+  This module defines no production descriptors or delivery handlers. Registration
+  accepts only the installed EVT-1 registry. The `registry_source` field mirrors
+  schema provenance and is distinct from the CloudEvents `source` attribute.
   """
 
   alias Ticketing.Outbox.CanonicalJSON
+
+  @evt1_contract_path Path.expand(
+                        "../../../../authority/contracts/EVT-1/extracted/EVT-1_Contract_v3.0.0.json",
+                        __DIR__
+                      )
+  @external_resource @evt1_contract_path
+  @installed_evt1 @evt1_contract_path |> File.read!() |> Jason.decode!()
 
   @registry_sha_pattern "^[0-9a-f]{64}$"
   @registry_sha_regex ~r/\A[0-9a-f]{64}\z/
@@ -49,20 +57,13 @@ defmodule Ticketing.Outbox.EventDescriptor do
           ordering_mode: :monotonic
         }
 
-  @doc "Validates static descriptor facts against the supplied EVT-1 contract."
+  @doc "Validates static descriptor facts against the installed EVT-1 contract."
   @spec register(map(), map()) :: {:ok, t()} | {:error, :EVT_INVALID_TYPE}
   def register(descriptor, evt1) when is_map(descriptor) and is_map(evt1) do
-    event_type = attribute(descriptor, :event_type)
-    event_types = Map.get(evt1, "event_types", %{})
-
-    with :ok <- validate_descriptor_shape(descriptor),
-         type when is_binary(type) <- event_type,
-         registry_entry when is_map(registry_entry) <- Map.get(event_types, type),
-         :ok <- validate_descriptor(descriptor, type, registry_entry, evt1),
-         {:ok, registered} <- build_descriptor(descriptor, type, registry_entry, evt1) do
-      {:ok, registered}
+    if evt1 == @installed_evt1 do
+      register_installed(descriptor)
     else
-      _ -> {:error, :EVT_INVALID_TYPE}
+      {:error, :EVT_INVALID_TYPE}
     end
   end
 
@@ -71,10 +72,11 @@ defmodule Ticketing.Outbox.EventDescriptor do
   @doc "Returns lowercase SHA-256 dedupe and ordering identities for an event."
   @spec digests(t(), map(), map()) ::
           {:ok, %{dedupe_key_sha256: binary(), ordering_key_sha256: binary()}}
-          | {:error, :EVT_CONTEXT_MISSING | :ERR_VALIDATION}
+          | {:error, :EVT_INVALID_TYPE | :EVT_CONTEXT_MISSING | :ERR_VALIDATION}
   def digests(%__MODULE__{} = descriptor, context, payload)
       when is_map(context) and is_map(payload) do
-    with :ok <- validate_context(descriptor, context),
+    with :ok <- validate_registered_descriptor(descriptor),
+         :ok <- validate_context(descriptor, context),
          :ok <- validate_payload(descriptor, payload),
          {:ok, ordered_dedupe_fields} <-
            ordered_values(descriptor.dedupe_key_fields, context, payload),
@@ -90,6 +92,30 @@ defmodule Ticketing.Outbox.EventDescriptor do
   end
 
   def digests(%__MODULE__{}, _context, _payload), do: {:error, :EVT_CONTEXT_MISSING}
+
+  defp register_installed(descriptor) do
+    event_type = attribute(descriptor, :event_type)
+
+    with :ok <- validate_descriptor_shape(descriptor),
+         type when is_binary(type) <- event_type,
+         event_types when is_map(event_types) <- Map.get(@installed_evt1, "event_types", %{}),
+         registry_entry when is_map(registry_entry) <- Map.get(event_types, type),
+         :ok <- validate_descriptor(descriptor, type, registry_entry, @installed_evt1),
+         {:ok, registered} <- build_descriptor(descriptor, type, registry_entry, @installed_evt1) do
+      {:ok, registered}
+    else
+      _ -> {:error, :EVT_INVALID_TYPE}
+    end
+  end
+
+  defp validate_registered_descriptor(descriptor) do
+    descriptor_fields = descriptor |> Map.from_struct() |> Map.take(@descriptor_keys)
+
+    case register_installed(descriptor_fields) do
+      {:ok, ^descriptor} -> :ok
+      _ -> {:error, :EVT_INVALID_TYPE}
+    end
+  end
 
   defp validate_descriptor(descriptor, event_type, registry_entry, evt1) do
     with :ok <- validate_registry_metadata(descriptor, event_type, registry_entry),
@@ -284,9 +310,11 @@ defmodule Ticketing.Outbox.EventDescriptor do
   end
 
   defp ordered_value(field, context, payload) do
-    case fetch_field(context, field) do
-      {:ok, value} -> {:ok, value}
-      :error -> fetch_field(payload, field)
+    case {fetch_field(context, field), fetch_field(payload, field)} do
+      {{:ok, _context_value}, {:ok, _payload_value}} -> :error
+      {{:ok, value}, :error} -> {:ok, value}
+      {:error, {:ok, value}} -> {:ok, value}
+      {:error, :error} -> :error
     end
   end
 

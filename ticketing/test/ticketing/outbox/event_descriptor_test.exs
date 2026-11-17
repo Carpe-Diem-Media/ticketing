@@ -10,10 +10,7 @@ defmodule Ticketing.Outbox.EventDescriptorTest do
                __DIR__
              )
   @evt1 @evt1_path |> File.read!() |> Jason.decode!()
-  @registry %{
-    "event_types" => Map.take(@evt1["event_types"], [@published_type, @archived_type]),
-    "event_envelope" => @evt1["event_envelope"]
-  }
+  @registry @evt1
   @context %{
     "org_id" => "org_00000000000000000000000001",
     "trace_id" => "trace-0001",
@@ -35,6 +32,39 @@ defmodule Ticketing.Outbox.EventDescriptorTest do
     invalid = Map.put(descriptor(@published_type), :event_type, "ticketing.unknown.v1")
 
     assert {:error, :EVT_INVALID_TYPE} = EventDescriptor.register(invalid, @registry)
+  end
+
+  test "rejects identity fields repeated in context and payload" do
+    assert {:ok, descriptor} = EventDescriptor.register(descriptor(@published_type), @registry)
+
+    payload = %{"event_id" => "event-0001", "version" => 3}
+    context_with_identity_override = Map.put(@context, "event_id", "context-event-9999")
+
+    assert {:error, :ERR_VALIDATION} =
+             EventDescriptor.digests(descriptor, context_with_identity_override, payload)
+  end
+
+  test "rejects an uninstalled event type added by a fabricated registry" do
+    event_type = "ticketing.forged.v1"
+    descriptor = Map.put(descriptor(@published_type), :event_type, event_type)
+    copied_entry = @registry["event_types"][@published_type]
+
+    fabricated_registry = %{
+      "event_types" => %{event_type => copied_entry},
+      "event_envelope" => %{"extensions" => %{"required" => [], "field_rules" => %{}}}
+    }
+
+    assert {:error, :EVT_INVALID_TYPE} =
+             EventDescriptor.register(descriptor, fabricated_registry)
+  end
+
+  test "rejects a directly constructed descriptor for an uninstalled type" do
+    assert {:ok, descriptor} = EventDescriptor.register(descriptor(@published_type), @registry)
+    forged_descriptor = %{descriptor | event_type: "ticketing.forged.v1"}
+    payload = %{"event_id" => "event-0001", "version" => 3}
+
+    assert {:error, :EVT_INVALID_TYPE} =
+             EventDescriptor.digests(forged_descriptor, @context, payload)
   end
 
   test "rejects registry facts that differ from EVT-1" do
