@@ -441,6 +441,25 @@ Plane project `Ticketing Platform` (`TICK`) is the persistent execution ledger.
 
 Plane is NOT canonical semantic authority.
 
+### Plane MCP access for agents
+
+Use the configured `plane` MCP integration when it is exposed in the agent's available tools.
+It connects to `https://mcp.plane.so/http/mcp` in the `symphony-development` workspace and
+authenticates with a bearer token supplied through `PLANE_API_KEY_JC`.
+
+- Never read, print, paste, log, or commit the token value. Do not ask the user to provide it
+  in chat.
+- Check that Plane MCP tools are available in the current agent session before tracker-dependent
+  work. A local Codex CLI can diagnose its configured server with `codex mcp list` and
+  `codex mcp get plane`; then verify access with a live Plane MCP request. Local CLI configuration
+  does not establish that another host, such as T3 Code, exposes those tools.
+- Use Plane MCP tools for live reads and writes. Do not send ad hoc HTTP requests with the token
+  or rely on a stale issue snapshot when the integration is unavailable.
+- If the `plane` server or required tools are missing, disabled, pointed at the wrong workspace,
+  or return an authentication error such as `401 invalid_token`, stop work that depends on current
+  Plane state. Report the exact access failure and ask the environment owner to reconnect the
+  configured integration through the approved secret store. Never ask for the token itself.
+
 Each material JIP has a parent work item and small executable child work items.
 
 Each execution work item should contain or link:
