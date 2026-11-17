@@ -2,7 +2,8 @@
 
 Status: source text recovered; original approval evidence recovered by the control tower; immutable acceptance-to-attachment-hash linkage unverified.
 Task: TICK-65, planning/document recovery only.
-Verified main: `937a811f6558dcebb8de430175e1e79f25f5ca19`.
+Original recovery baseline: `937a811f6558dcebb8de430175e1e79f25f5ca19`.
+Targeted refresh baseline, 2026-11-17: `62bce2950229208d25817ac48e3c005146830fb4`.
 
 ## Recovered source
 
@@ -52,6 +53,24 @@ Recovery checks confirmed exact equality between the preserved file and the extr
 
 The original `git diff --cached --check` reported 11 trailing-whitespace findings at packet lines 3, 4, 5, 6, 7, 385, 386, 387, 539, 642 and 643. Each is an original two-space Markdown hard break. They remain unchanged for byte fidelity. The formal review accepts their treatment as a documented preservation exception. A full PR whitespace check still reports them; it must not be described as passing. No Git whitespace rule was weakened.
 
-CI run `44023186299` on reviewed head `dedacf525f86771dcde9d8652e5b8beef35ef48b` passed `check_types` but failed `bootstrap` at `mix check`. The review records security-audit failures for retired `ash_sql 0.8.4`, `phoenix_html 4.3.0` advisory `EEF-CVE-2026-117645`, and `ecto 3.14.2` advisory `EEF-CVE-2026-118391` / `GHSA-cxjx-vmm2-qr8r`. These inherited lockfile findings belong to separate prerequisite TICK-67, which blocks TICK-65. This documentation correction changes no dependencies or CI and does not waive the failed security gate. Fresh CI on the corrected head must be assessed separately.
+Historical CI run `44023186299` on reviewed head `dedacf525f86771dcde9d8652e5b8beef35ef48b` passed `check_types` but failed `bootstrap` at `mix check`. The review records security-audit failures for retired `ash_sql 0.8.4`, `phoenix_html 4.3.0` advisory `EEF-CVE-2026-117645`, and `ecto 3.14.2` advisory `EEF-CVE-2026-118391` / `GHSA-cxjx-vmm2-qr8r`. The subsequent run `44025302809` on `1b7e26fcef0a95a558ae00cc443393d9d55438ad` also failed bootstrap and passed check_types. Those failures remain historical evidence, not a diagnosis of the refreshed dependency baseline.
 
-Keep PR #59 open and draft for fresh independent review. Resolve required CI through separately governed TICK-67 and retain the honest attachment-hash linkage limit. This correction grants no SPEC derivation, ticket decomposition, READY transition, product implementation or merge authorization.
+## Targeted refresh after merged maintenance
+
+PR #60 merged dependency maintenance at `e6456d7148fa10d7ca239cdc9f4e241f9ccde4db`; PR #61 merged the approved Option A maintenance JIP at `62bce2950229208d25817ac48e3c005146830fb4`. GitHub reports the current main signature verified. Its own post-merge CI run `44043426567` completed successfully. This does not replace fresh checks or review on PR #59's updated head.
+
+The original JIP remains byte-for-byte preserved, including its DRAFT text and 11 hard breaks. Its Ash 3.37.2 / AshPostgres 2.15.2 technical baseline is stale for current execution. The accompanying `JIP-T0-02A_v0.2.1.md` is a DRAFT technical-baseline amendment for independent review and explicit owner acceptance. It records merged Ash 3.37.6, AshPostgres 2.16.0, Ash SQL 0.8.9, Ecto 3.14.3 and Phoenix.HTML 4.4.0, rechecks AshOban/Oban compatibility, and preserves the original product/domain requirements. It does not modify or retroactively reapprove v0.2.0.
+
+Installed CANON-1 2.0.20, OBQC-1 2.2.0, the entire authority tree, root governance, ROADMAP, tracer, domain source, migrations and snapshots are unchanged since the original baseline. The source approval evidence and immutable attachment-hash linkage limit above remain effective. Neither a maintenance merge nor the amendment creates the missing hash binding.
+
+TICK-67 still has live Plane state Planning and a native blocked_by relation from TICK-65. Its latest control-tower comment records both maintenance merges. Record merged remediation as observed; leave closeout, blocker disposition and readiness to the control tower. TICK-68 incident disposition and TICK-69 PostgreSQL 18.7 security applicability remain separately unresolved. No operational secret, database or infrastructure action is authorized here.
+
+Targeted local verification on 2026-11-17:
+
+- `PYTHONPATH=authority /tmp/tick65-authority-venv/bin/python -m pytest -q authority/tests`: 303 passed in 20.13 seconds.
+- `python3 authority/tools/contract_manifest.py verify --root authority`: VALID, 58 contracts, unchanged manifest SHA-256.
+- `/tmp/tick65-authority-venv/bin/python authority/tools/generate_canon.py verify --root authority`: VALID, CANON-1 2.0.20, 56 pins.
+- `/tmp/tick65-authority-venv/bin/python authority/tools/reconcile_contracts.py audit --canonical --strict --root authority --json-output /tmp/tick65-refresh-audit.json --markdown-output /tmp/tick65-refresh-audit.md`: PASS, 58 ZIPs and 729 dependency edges.
+- Source-checksum and normalized section comparisons pass: v0.2.0 unchanged; v0.2.1 sections 5–26 preserve requirements apart from version references and Markdown spacing. The new draft and recovery-record correction introduce no whitespace findings; the full PR retains only the original 11 disclosed source findings.
+
+Keep PR #59 open and draft for fresh independent review of the updated head and amendment. Preserve the source-identity caveat, obtain the required amendment acceptance and reconcile current CI/Plane gates before downstream progression. This refresh grants no SPEC derivation, ticket decomposition, READY transition, product implementation or merge authorization.
