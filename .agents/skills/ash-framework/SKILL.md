@@ -97,6 +97,5 @@ mix usage_rules.search_docs "search term" -p ash -p ash_phoenix -p ash_postgres
 - `mix ash_postgres.migrate` - Runs the repository migrations for all repositories in the provided (or configured) domains
 - `mix ash_postgres.rollback` - Rolls back the repository migrations for all repositories in the provided (or configured) domains
 - `mix ash_postgres.setup_vector` - Sets up pgvector for AshPostgres
-- `mix ash_postgres.setup_vector.docs`
 - `mix ash_postgres.squash_snapshots` - Cleans snapshots folder, leaving only one snapshot per resource
 <!-- usage-rules-skill-end -->

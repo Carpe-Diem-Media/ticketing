@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-readonly tailwind_version='4.3.3'
+readonly tailwind_version='4.3.5'
 readonly tailwind_target='linux-x64'
-readonly tailwind_sha256='dc61b3ac6b8c9ca874c0cc4c57b2409791a64c5540404ca5f5367360babc313a'
-readonly tailwind_url='https://github.com/tailwindlabs/tailwindcss/releases/download/v4.3.3/tailwindcss-linux-x64'
-readonly tailwind_relative_path='ticketing/_build/tailwind-linux-x64-4.3.3'
+readonly tailwind_sha256='e47695cee3f0d90623a91f3939b08bdee610eb5ad99340adff9d4145b284d6cc'
+readonly tailwind_url='https://github.com/tailwindlabs/tailwindcss/releases/download/v4.3.5/tailwindcss-linux-x64'
+readonly tailwind_relative_path='ticketing/_build/tailwind-linux-x64-4.3.5'
 
 if (($# > 1)); then
   printf 'Usage: %s [repository-root]\n' "$0" >&2

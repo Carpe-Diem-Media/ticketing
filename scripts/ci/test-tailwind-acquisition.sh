@@ -4,8 +4,8 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 installer="$repo_root/scripts/ci/ensure-tailwind-binary.sh"
 workflow="$repo_root/.github/workflows/ci.yml"
-expected_url='https://github.com/tailwindlabs/tailwindcss/releases/download/v4.3.3/tailwindcss-linux-x64'
-expected_sha256='dc61b3ac6b8c9ca874c0cc4c57b2409791a64c5540404ca5f5367360babc313a'
+expected_url='https://github.com/tailwindlabs/tailwindcss/releases/download/v4.3.5/tailwindcss-linux-x64'
+expected_sha256='e47695cee3f0d90623a91f3939b08bdee610eb5ad99340adff9d4145b284d6cc'
 
 fail() {
   printf 'FAIL: %s\n' "$1" >&2
@@ -15,7 +15,7 @@ fail() {
 [[ -f "$installer" ]] || fail "Tailwind acquisition helper is missing"
 [[ -f "$workflow" ]] || fail "CI workflow is missing"
 
-grep -Fq "$expected_url" "$installer" || fail "Tailwind v4.3.3 URL is not pinned"
+grep -Fq "$expected_url" "$installer" || fail "Tailwind v4.3.5 URL is not pinned"
 grep -Fq "$expected_sha256" "$installer" || fail "Tailwind SHA-256 is not pinned"
 if grep -Eiq 'latest|tailwindcss/releases/latest' "$installer"; then
   fail "Tailwind acquisition must not resolve a moving latest version"
@@ -26,7 +26,7 @@ helper_line="$(grep -nF 'ensure-tailwind-binary.sh' "$workflow" | head -n 1 | cu
 setup_line="$(grep -nE 'run: mix setup$' "$workflow" | head -n 1 | cut -d: -f1 || true)"
 [[ -n "$test_line" && -n "$helper_line" && -n "$setup_line" ]] || fail "CI must test and acquire Tailwind before mix setup"
 ((test_line < helper_line && helper_line < setup_line)) || fail "Tailwind checks and acquisition must precede mix setup"
-grep -Fq "readonly tailwind_relative_path='ticketing/_build/tailwind-linux-x64-4.3.3'" "$installer" ||
+grep -Fq "readonly tailwind_relative_path='ticketing/_build/tailwind-linux-x64-4.3.5'" "$installer" ||
   fail "Tailwind destination path is not pinned to the wrapper's expected path"
 
 test_root="$(mktemp -d)"
@@ -79,7 +79,7 @@ check_failed_download() {
   local exec_marker="$test_root/$mode.binary-executed"
   local error_log="$test_root/$mode.stderr"
   local exit_code=0
-  local destination="$case_root/ticketing/_build/tailwind-linux-x64-4.3.3"
+  local destination="$case_root/ticketing/_build/tailwind-linux-x64-4.3.5"
   local previous_target="$test_root/$mode.previous-target"
 
   mkdir -p "$case_root/ticketing"
@@ -107,7 +107,7 @@ check_failed_download() {
     [[ ! -e "$destination" ]] || fail "$mode left an installable Tailwind binary"
   fi
   [[ ! -e "$chmod_marker" ]] || fail "$mode reached chmod before verification"
-  if compgen -G "$case_root/ticketing/_build/.tailwind-linux-x64-4.3.3.tmp.*" > /dev/null; then
+  if compgen -G "$case_root/ticketing/_build/.tailwind-linux-x64-4.3.5.tmp.*" > /dev/null; then
     fail "$mode left a temporary download behind"
   fi
 
