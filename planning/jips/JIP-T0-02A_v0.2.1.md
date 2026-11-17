@@ -1,7 +1,7 @@
 # JIP-T0-02A v0.2.1 — Durable Domain Outbox and Tenant-Bound Delivery Substrate
 
-**Status:** DRAFT
-**Approval:** DRAFT technical-baseline amendment awaiting independent review and explicit owner acceptance. Original v0.2.0 approval is historical and is not transferred automatically.
+**Status:** APPROVED — explicit owner acceptance of v0.2.1 technical-baseline amendment, 2026-11-17; implementation remains non-READY.
+**Approval:** Owner accepted JIP-T0-02A v0.2.1 after independent review 5935091166 and accepted the preserved v0.2.0 SHA-256 as the recovery reference, without claiming historical immutable acceptance-to-file-hash proof. Planning merge was separately authorized subject to final exact-head checks; derivative SPEC/ticket work follows the merged-main gate.
 **Roadmap:** T0 — Tenant-scoped GA pending sale
 **Increment:** T0-02A platform prerequisite only
 **Plane discovery:** TICK-65
@@ -953,18 +953,18 @@ Official Hex release metadata was rechecked on 2026-11-17. Ash 3.37.6, AshPostgr
 5. PostgreSQL 18.7 applicability is TICK-69. Its RLS/upsert security concerns matter to future outbox persistence verification, but the live item is discovery work and is not a native TICK-65 blocker today. Do not self-authorize an upgrade or invent a dependency. Obtain its reviewed applicability/disposition before claiming the overall runtime security-current or implementation-ready.
 6. TICK-68 remains an unresolved operational incident with no verified disposition in this session. The maintenance merges do not close it. This refresh handles sanitized planning evidence only.
 
-No new canonical contradiction was found within this targeted delta. The original design alternatives and product semantics remain settled. The open decision is acceptance of this technical-baseline amendment and the control tower's disposition of remaining evidence/readiness gates, not a new outbox design interview.
+No new canonical contradiction was found within this targeted delta. The original design alternatives and product semantics remain settled. The owner accepted this narrowly scoped technical-baseline amendment on 2026-11-17 following independent control-tower review 5935091166. The remaining decisions concern post-merge evidence, Plane readiness and separate operational items, not a new outbox design interview.
 
 ### Source identity, approval and next action
 
 The recovered v0.2.0 source remains 35,704 bytes with SHA-256 `aa4ce2afdc931b37aa03fef75115ab5b2a1d4b0d5a626c1ab72cc1717e9833b9`. Its recovery record retains original user acceptance and the unverified immutable acceptance-to-attachment-hash linkage. This successor does not resolve that historic linkage by assertion or transfer the old approval automatically.
 
-Independent control-tower review must assess this targeted amendment, exact PR diff/head, fresh CI and live Plane reconciliation. Explicit owner acceptance of v0.2.1 is required before it replaces the stale technical baseline for downstream planning. No SPEC, to-tickets, READY transition, product implementation or merge is authorized in this task. No application implementation documentation is changed because outbox behavior remains unimplemented.
+Independent control-tower review 5935091166 accepted the narrow technical amendment at PR #59 head af52ecc4a09e8ac850d94f19dbeaf7a2cc1787c6; exact-head CI 44044912626 passed. The owner subsequently explicitly accepted v0.2.1 and authorized PR #59 merge after final checks. The preserved v0.2.0 source's SHA-256 aa4ce2afdc931b37aa03fef75115ab5b2a1d4b0d5a626c1ab72cc1717e9833b9 is accepted as a recovery reference; immutable historical acceptance-to-attachment-hash linkage is still unproven. A new documentation-approval-record commit requires its own final diff/CI review before the authorized merge. No SPEC, to-tickets, READY transition or application implementation has occurred yet. No application implementation documentation is changed because outbox behavior remains unimplemented.
 
 ---
 
 **Approval boundary**
 
-This document remains `DRAFT` until the user explicitly accepts **JIP-T0-02A v0.2.1**.
+**JIP-T0-02A v0.2.1 is APPROVED** by the owner's explicit acceptance on 2026-11-17. The owner also separately authorized PR #59 merge after final checks; this is not a CI bypass, nor a retroactive READY transition.
 
-Approval authorizes derivative specification and ticket decomposition only. It does not by itself authorize arbitrary implementation work, future T0 scope, dependency upgrades outside the decisions above, or a production event sink.
+JIP approval authorizes derivative specification and ticket decomposition only, after the required planning merge and merged-main verification. It does not by itself authorize arbitrary implementation work, future T0 scope, dependency upgrades outside the decisions above, or a production event sink.
