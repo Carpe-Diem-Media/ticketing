@@ -74,3 +74,9 @@ Targeted local verification on 2026-11-17:
 - Source-checksum and normalized section comparisons pass: v0.2.0 unchanged; v0.2.1 sections 5–26 preserve requirements apart from version references and Markdown spacing. The new draft and recovery-record correction introduce no whitespace findings; the full PR retains only the original 11 disclosed source findings.
 
 Keep PR #59 open and draft for fresh independent review of the updated head and amendment. Preserve the source-identity caveat, obtain the required amendment acceptance and reconcile current CI/Plane gates before downstream progression. This refresh grants no SPEC derivation, ticket decomposition, READY transition, product implementation or merge authorization.
+
+## 2026-11-17 owner disposition of recovered reference
+
+Following independent control-tower review `5935091166`, the owner explicitly accepted **JIP-T0-02A v0.2.1** and accepted the preserved v0.2.0 source SHA-256 `aa4ce2afdc931b37aa03fef75115ab5b2a1d4b0d5a626c1ab72cc1717e9833b9` **as the recovery reference**. This is a present-day acceptance of the recovered artifact identity for continuity, **not** proof that the original 2026-10-30 acceptance was immutably bound to this digest. The historical limitation, source bytes and timeline above remain unchanged.
+
+The owner separately authorized merging PR #59 **after final exact-head CI and independent review**. The previously stated DRAFT/merge restrictions describe the pre-approval state and are superseded only as to owner approval and conditional merge authorization. Implementation READY, specification/ticket decomposition and downstream execution remain subject to merged-main and Plane gates. This decision does not authorize credential or database operations, resolve TICK-68/TICK-69, or modify the recovered v0.2.0 source.
