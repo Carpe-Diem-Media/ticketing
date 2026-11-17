@@ -1,6 +1,6 @@
 # JIP-T0-02A v0.2.0 recovery record
 
-Status: source text recovered; original acceptance message not recovered.
+Status: source text recovered; original approval evidence recovered by the control tower; immutable acceptance-to-attachment-hash linkage unverified.
 Task: TICK-65, planning/document recovery only.
 Verified main: `937a811f6558dcebb8de430175e1e79f25f5ca19`.
 
@@ -21,11 +21,16 @@ The command concatenated the Unslop skill and the attachment. Recovery removed t
 
 ## Approval evidence and limit
 
-TICK-65's live description records explicit user acceptance on 2026-10-30. Control-tower comment `703e95a5-73b3-4238-abe5-400d521cf1cd` reiterates that approval record on 2026-11-17. The current owner recovery instruction also identifies v0.2.0 as approved.
+The independent control tower recovered original approval evidence from the Ticketing account conversation context. Its [formal PR #59 review](https://github.com/Carpe-Diem-Media/ticketing/pull/59#pullrequestreview-5933424581), submitted on 2026-11-17 against head `dedacf525f86771dcde9d8652e5b8beef35ef48b`, and TICK-65 comment `27f4c2c2-c794-453c-822e-6b052f1bc43b` record this timeline on 2026-10-30, all against `main@937a811f6558dcebb8de430175e1e79f25f5ca19`:
 
-The recovered session's final assistant response says that the attachment is a draft and asks whether to review or approve it. That session contains no subsequent user acceptance. No original acceptance message or immutable approval-to-document hash binding was recovered. The available earlier planning thread contains rejected drafts and PR #58 authority-repair evidence; neither substitutes for this packet or its acceptance.
+- 11:43:58 UTC: the assistant identified the approval candidate as JIP-T0-02A v0.2.0.
+- 11:53:55 UTC: the recovered attachment-source command event occurred, with the precise log timestamp `2026-10-30T11:53:55.652Z`.
+- 12:01:38 UTC: the original user response was `accepted`.
+- 12:07:23 UTC: the assistant recorded `JIP-T0-02A v0.2.0 is now APPROVED`.
 
-This recovery therefore proves the full v0.2.0 source text, while approval identity remains supported by the tracker and current owner instruction rather than the original acceptance message. Do not claim that original message was verified. SPEC derivation remains blocked pending owner/control-tower confirmation that this exact recovered digest is the accepted packet, or recovery of the original acceptance record tied to this text. No new semantic approval is inferred from this PR.
+This is strong version/title/timeline evidence of original user approval, beyond the tracker summary. The attachment-source event precedes acceptance and follows identification of the candidate. The narrower attachment-reading session ends awaiting approval; that local session's lack of a later acceptance does not negate the approval recovered from the account conversation context. The correction relies on the control tower's cited evidence; this recovery agent has not independently accessed that underlying account conversation.
+
+The remaining limit is exact-byte linkage. No immutable record binding the acceptance to the recovered attachment's SHA-256 was available in that conversation context. Matching version, title and chronology do not prove that hash binding. The recovered file's byte count and digest remain verified independently, and its original DRAFT text remains unchanged. This correction records existing approval; it neither requests semantic reapproval nor claims a new approval. If the control tower requires further source-identity evidence before SPEC derivation, owner confirmation should identify the recovered digest, rather than reapprove the JIP's semantics. The current task authorizes no SPEC derivation or downstream progression.
 
 ## Installed OBQC comparison
 
@@ -45,6 +50,8 @@ This is a document comparison, not proof of framework integration or application
 
 Recovery checks confirmed exact equality between the preserved file and the extracted source bytes, the recorded byte count and SHA-256, and all 26 numbered sections plus the approval boundary.
 
-`git diff --cached --check` reports 11 trailing-whitespace findings at packet lines 3, 4, 5, 6, 7, 385, 386, 387, 539, 642 and 643. Each is an original two-space Markdown hard break. They are retained to preserve the source bytes. This is a disclosed check failure requiring reviewer acceptance of source preservation, not a passing whitespace check. No Git whitespace rule was weakened.
+The original `git diff --cached --check` reported 11 trailing-whitespace findings at packet lines 3, 4, 5, 6, 7, 385, 386, 387, 539, 642 and 643. Each is an original two-space Markdown hard break. They remain unchanged for byte fidelity. The formal review accepts their treatment as a documented preservation exception. A full PR whitespace check still reports them; it must not be described as passing. No Git whitespace rule was weakened.
 
-Review the exact recovery PR and evidence. Confirm the accepted packet's identity before deriving SPEC-T0-02A. This PR grants no implementation readiness, ticket decomposition or merge authorization.
+CI run `44023186299` on reviewed head `dedacf525f86771dcde9d8652e5b8beef35ef48b` passed `check_types` but failed `bootstrap` at `mix check`. The review records security-audit failures for retired `ash_sql 0.8.4`, `phoenix_html 4.3.0` advisory `EEF-CVE-2026-117645`, and `ecto 3.14.2` advisory `EEF-CVE-2026-118391` / `GHSA-cxjx-vmm2-qr8r`. These inherited lockfile findings belong to separate prerequisite TICK-67, which blocks TICK-65. This documentation correction changes no dependencies or CI and does not waive the failed security gate. Fresh CI on the corrected head must be assessed separately.
+
+Keep PR #59 open and draft for fresh independent review. Resolve required CI through separately governed TICK-67 and retain the honest attachment-hash linkage limit. This correction grants no SPEC derivation, ticket decomposition, READY transition, product implementation or merge authorization.
