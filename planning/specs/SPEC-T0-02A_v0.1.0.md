@@ -1,6 +1,6 @@
 # SPEC-T0-02A v0.1.0 — Tenant-Bound Durable Outbox
 
-**Status:** DRAFT DERIVATIVE — awaiting independent review and explicit owner acceptance.
+**Status:** APPROVED DERIVATIVE — owner explicitly accepted SPEC-T0-02A v0.1.0 on 2026-11-17. Independent review of the derived ticket graph and implementation readiness remain separate gates.
 **Governing JIP:** APPROVED `planning/jips/JIP-T0-02A_v0.2.1.md` on `main@28517865d8a6bbabf14ac8631798f3e79d29002e`.
 **Execution:** Plane TICK-65. **Installed authority:** CANON-1 2.0.20, EVT-1 3.0.0, OBQC-1 2.2.0, TEN-1 2.0.1 and other applicable installed contracts.
 **Baseline:** Ash 3.37.6, AshPostgres 2.16.0, Ash SQL 0.8.9, Ecto 3.14.3; AshOban 0.10.3 and direct Oban 2.24.x (reviewed 2.24.2) remain uninstalled JIP-approved prerequisites.
@@ -78,5 +78,5 @@ These classes are mandatory JIP §22 minimums, not optional suggestions. Real DB
 
 ## 10. Context Docs, status and stop conditions
 As in JIP §23: UPDATE `ticketing/docs/README.md`, `ticketing/docs/platform/database.md`, `runtime.md`, `tenancy-and-authorization.md`, `testing-and-quality-gates.md`; CREATE `ticketing/docs/platform/outbox-and-job-delivery.md`, `ticketing/docs/handoffs/JIP-T0-02A.md`. Docs must describe merged code only; no speculative Occurrence dossier.
-Independent spec review and explicit owner acceptance are required. Only after planning merge, fresh `main`, `to-tickets` and independent Plane dependency review can an unblocked child become READY; never authorize implementation just because the JIP is APPROVED.
+Owner acceptance of SPEC-T0-02A v0.1.0 was explicitly given in the Ticketing control-tower conversation on 2026-11-17; planning PR #62 has merged. Independent review of this derivative and the Plane decomposition, verified merged-main CI, and dependency/freshness clearance remain mandatory before any implementation child becomes READY. Owner acceptance of the spec does not itself authorize implementation.
 TICK-68 remains open as a separate credential-exposure incident. TICK-69 PostgreSQL 18.7 security applicability must be reviewed before claiming affected RLS/upsert implementation secure/READY. This spec neither rotates credentials nor upgrades PostgreSQL. If Ash expiry-upsert, cursor CAS, four-way atomicity, tenant/RLS or generated-final-error proof fails, STOP, record Plane blocker, targeted JIT; no direct Repo bypass, new semantic state or unapproved change.
